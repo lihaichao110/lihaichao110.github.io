@@ -1,7 +1,6 @@
 # 用于构建 VitePress 站点并将其部署到 GitHub Pages 的示例工作流程
 #
 name: Deploy VitePress site to Pages
-run-name: ${{ github.actor }} is running GitHub Actions 🚀
 
 on:
   schedule:
@@ -54,11 +53,6 @@ jobs:
         uses: actions/upload-pages-artifact@v2
         with:
           path: docs/.vitepress/dist
-      - name: Send WeChat Message
-        env:
-          SEND_KEY: ${{ secrets.SEND_KEY }}
-        run: |
-          curl -X POST -d "title=GitHub Actions&desp=消息推送功能." https://sctapi.ftqq.com/$SEND_KEY.send
 
   # Deployment job
   deploy:
@@ -72,3 +66,17 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
+
+  sendMsg:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: 开始构建
+        run: |
+          echo "开始构建"
+      - name: Send WeChat Message
+        env:
+          SEND_KEY: ${{ secrets.SEND_KEY }}
+        run: |
+          curl -X POST -d "title=GitHub Actions&desp=消息推送功能." https://sctapi.ftqq.com/$SEND_KEY.send
+      
