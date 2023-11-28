@@ -55,18 +55,18 @@ jobs:
           path: docs/.vitepress/dist
 
   # Send-WeChat-Message job
-  sendMsg:
-    runs-on: ubuntu-latest
-    steps:
+  # sendMsg:
+  #   runs-on: ubuntu-latest
+  #   steps:
       # - uses: actions/checkout@v4
       # - name: 开始构建
       #   run: |
       #     echo "开始构建"
-      - name: Send WeChat Message
-        env:
-          SEND_KEY: ${{ secrets.SEND_KEY }}
-        run: |
-          curl -X POST -d "title=GitHub Actions&desp=消息推送功能." https://sctapi.ftqq.com/$SEND_KEY.send
+      # - name: Send WeChat Message
+      #   env:
+      #     SEND_KEY: ${{ secrets.SEND_KEY }}
+      #   run: |
+      #     curl -X POST -d "title=GitHub Actions&desp=消息推送功能." https://sctapi.ftqq.com/$SEND_KEY.send
 
   # Deployment job
   deploy:
