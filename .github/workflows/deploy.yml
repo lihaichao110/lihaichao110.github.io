@@ -58,10 +58,10 @@ jobs:
   sendMsg:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: 开始构建
-        run: |
-          echo "开始构建"
+      # - uses: actions/checkout@v4
+      # - name: 开始构建
+      #   run: |
+      #     echo "开始构建"
       - name: Send WeChat Message
         env:
           SEND_KEY: ${{ secrets.SEND_KEY }}
