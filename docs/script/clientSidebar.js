@@ -1,13 +1,25 @@
 import {walk} from "./utils";
 
-// 前端模块
-const webDir = '../client';
-export const clientSidebar = walk(webDir,'js');
+// 首页模块
+const homeDir = '../home/toolbox';
+export const homeSidebar = walk(homeDir,'零零碎碎');
 
-// offer 指南
-const offerDir = '../offer'
-export const offerSidebar = walk(offerDir,'js')
+// javascript模块
+const jsDir = '../client/js';
+export const jsSidebar = walk(jsDir,'JavaScript');
 
-// 服务端
-const serverDir = '../server';
-export const serverSidebar = walk(serverDir,'js')
+// gsap模块
+const gsapDir = '../client/gsap';
+export const gsapSidebar = walk(gsapDir,'GSAP');
+
+// offer-网络
+const networkDir = '../offer/network'
+export const networkSidebar = walk(networkDir,'网络')
+
+// nodejs
+const nodejsDir = '../server/nodejs';
+export const nodejsSidebar = walk(nodejsDir,'NodeJs')
+
+// nestjs
+const nestjsDir = '../server/nestjs';
+export const nestjsSidebar = walk(nestjsDir,'NestJs');

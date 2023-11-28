@@ -10,7 +10,7 @@ hero:
   actions:
     - theme: brand
       text: 开始学习
-      link: /markdown-examples
+      link: /home/toolbox/1.vitepress自动生成侧边栏
     - theme: alt
       text: CSDN
       link: https://blog.csdn.net/weixin_48771508?type=blog
