@@ -44,7 +44,7 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Install dependencies
-        run: npm i # or pnpm install / yarn install / bun install
+        run: npm ci # or pnpm install / yarn install / bun install
       - name: Build with VitePress
         run: |
           npm run docs:build # or pnpm docs:build / yarn docs:build / bun run docs:build
@@ -53,20 +53,6 @@ jobs:
         uses: actions/upload-pages-artifact@v2
         with:
           path: docs/.vitepress/dist
-
-  # Send-WeChat-Message job
-  # sendMsg:
-  #   runs-on: ubuntu-latest
-  #   steps:
-      # - uses: actions/checkout@v4
-      # - name: 开始构建
-      #   run: |
-      #     echo "开始构建"
-      # - name: Send WeChat Message
-      #   env:
-      #     SEND_KEY: ${{ secrets.SEND_KEY }}
-      #   run: |
-      #     curl -X POST -d "title=GitHub Actions&desp=消息推送功能." https://sctapi.ftqq.com/$SEND_KEY.send
 
   # Deployment job
   deploy:
@@ -80,3 +66,17 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
+  
+  # Send-WeChat-Message job
+  # sendMsg:
+  #   runs-on: ubuntu-latest
+  #   steps:
+      # - uses: actions/checkout@v4
+      # - name: 开始构建
+      #   run: |
+      #     echo "开始构建"
+      # - name: Send WeChat Message
+      #   env:
+      #     SEND_KEY: ${{ secrets.SEND_KEY }}
+      #   run: |
+      #     curl -X POST -d "title=GitHub Actions&desp=消息推送功能." https://sctapi.ftqq.com/$SEND_KEY.send
