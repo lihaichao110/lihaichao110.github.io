@@ -1,0 +1,19 @@
+{
+  "description": "CodeVortex 这个名字旨在传达一种编程的深度和引力感。Code 表示编程，而 Vortex 意味着旋涡或漩涡，象征着深奥而引人入胜的编程世界。这个名字希望传达出一种代码世界的引力场，让人产生探索和深入学习编程的愿望。",
+  "license": "MIT",
+  "author": {
+    "name": "李海超",
+    "email": "17645103861@163.com"
+  },
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "devDependencies": {
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
+    "sass": "^1.69.5",
+    "vitepress": "^1.0.0-rc.31"
+  }
+}
