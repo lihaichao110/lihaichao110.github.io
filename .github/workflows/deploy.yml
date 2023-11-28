@@ -1,24 +1,27 @@
-# Sample workflow for building and deploying a VitePress site to GitHub Pages
+# 用于构建 VitePress 站点并将其部署到 GitHub Pages 的示例工作流程
 #
 name: Deploy VitePress site to Pages
+run-name: ${{ github.actor }} is running GitHub Actions 🚀
 
 on:
-  # Runs on pushes targeting the `main` branch. Change this to `master` if you're
-  # using the `master` branch as the default branch.
+  schedule:
+    - cron: '0 1 * * *'
+  # 推送的分支为 main 如果是 master 请填写 master
+  # 默认的分支是 master
   push:
     branches: [main]
 
-  # Allows you to run this workflow manually from the Actions tab
+  # 允许手动运行此流程
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+# 设置 github_token 的权限允许部署到 GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+# 仅允许一项并发部署，跳过正在进行的运行和最新排队的运行之间排队的运行。
+# 但是，请勿取消正在进行的运行，因为我们希望完成这些生产部署。
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -31,9 +34,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0 # Not needed if lastUpdated is not enabled
-      # - uses: pnpm/action-setup@v2 # Uncomment this if you're using pnpm
-      # - uses: oven-sh/setup-bun@v1 # Uncomment this if you're using Bun
+          fetch-depth: 0 # 如果未启用lastUpdated则不需要
+      # - uses: pnpm/action-setup@v2 # 如果您使用 pnpm，请取消注释
+      # - uses: oven-sh/setup-bun@v1 # 如果您使用 Bun，请取消注释
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
@@ -51,6 +54,11 @@ jobs:
         uses: actions/upload-pages-artifact@v2
         with:
           path: docs/.vitepress/dist
+      - name: Send WeChat Message
+        env:
+          SEND_KEY: ${{ secrets.SEND_KEY }}
+        run: |
+          curl -X POST -d "title=GitHub Actions&desp=消息推送功能." https://sctapi.ftqq.com/$SEND_KEY.send
 
   # Deployment job
   deploy:
