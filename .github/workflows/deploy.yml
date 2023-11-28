@@ -79,4 +79,3 @@ jobs:
           SEND_KEY: ${{ secrets.SEND_KEY }}
         run: |
           curl -X POST -d "title=GitHub Actions&desp=消息推送功能." https://sctapi.ftqq.com/$SEND_KEY.send
-      
