@@ -23,3 +23,7 @@ export const nodejsSidebar = walk(nodejsDir,'NodeJs')
 // nestjs
 const nestjsDir = '../server/nestjs';
 export const nestjsSidebar = walk(nestjsDir,'NestJs');
+
+// mysql
+const mysqlDir = '../server/mysql';
+export const mysqlSidebar = walk(mysqlDir,'MySql')

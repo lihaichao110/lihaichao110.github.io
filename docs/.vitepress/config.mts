@@ -5,7 +5,8 @@ import {
   gsapSidebar,
   networkSidebar, 
   nodejsSidebar, 
-  nestjsSidebar 
+  nestjsSidebar,
+  mysqlSidebar
 } from '../script/clientSidebar'
 
 // https://vitepress.dev/reference/site-config
@@ -68,6 +69,7 @@ export default defineConfig({
             items: [
               { text: 'NodeJs', link: '/server/nodejs/1.快速上手' },
               { text: 'NestJs', link: '/server/nestjs/01-NestJS使用指南' },
+              { text: 'MySql', link: '/server/mysql/01-基础用法' }
             ]
           },
         ]
@@ -82,6 +84,7 @@ export default defineConfig({
       '/offer/network': networkSidebar,
       '/server/nodejs': nodejsSidebar,
       '/server/nestjs': nestjsSidebar,
+      '/server/mysql': mysqlSidebar,
     },
     socialLinks: [
       { icon: 'github', link: 'https://github.com/lihaichao110' },
