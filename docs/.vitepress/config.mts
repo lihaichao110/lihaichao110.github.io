@@ -67,7 +67,7 @@ export default defineConfig({
           {
             text: '服务',
             items: [
-              { text: 'NodeJs', link: '/server/nodejs/1.快速上手' },
+              { text: 'NodeJs', link: '/server/nodejs/01-快速上手' },
               { text: 'NestJs', link: '/server/nestjs/01-NestJS使用指南' },
               { text: 'MySql', link: '/server/mysql/01-基础用法' }
             ]
