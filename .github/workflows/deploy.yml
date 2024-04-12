@@ -3,8 +3,8 @@
 name: Deploy VitePress site to Pages
 
 on:
-  schedule:
-    - cron: '0 1 * * *'
+  # schedule:
+  #   - cron: '0 1 * * *'
   # 推送的分支为 main 如果是 master 请填写 master
   # 默认的分支是 master
   push:
@@ -31,26 +31,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0 # 如果未启用lastUpdated则不需要
       # - uses: pnpm/action-setup@v2 # 如果您使用 pnpm，请取消注释
       # - uses: oven-sh/setup-bun@v1 # 如果您使用 Bun，请取消注释
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: npm # or pnpm / yarn
       - name: Setup Pages
-        uses: actions/configure-pages@v3
+        uses: actions/configure-pages@v4
       - name: Install dependencies
-        run: npm ci # or pnpm install / yarn install / bun install
+        run: npm install # ci # or pnpm install / yarn install / bun install
       - name: Build with VitePress
-        run: |
-          npm run docs:build # or pnpm docs:build / yarn docs:build / bun run docs:build
-          touch docs/.vitepress/dist/.nojekyll
+        run: npm run docs:build # or pnpm docs:build / yarn docs:build / bun run docs:build
+          # touch docs/.vitepress/dist/.nojekyll
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
           path: docs/.vitepress/dist
 
@@ -65,18 +64,18 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
   
   # Send-WeChat-Message job
-  sendMsg:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: 开始构建
-        run: |
-          echo "开始构建"
-      - name: Send WeChat Message
-        env:
-          SEND_KEY: ${{ secrets.SEND_KEY }}
-        run: |
-          curl -X POST -d "title=GitHub Actions&desp=消息推送功能." https://sctapi.ftqq.com/$SEND_KEY.send
+  # sendMsg:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: 开始构建
+  #       run: |
+  #         echo "开始构建"
+  #     - name: Send WeChat Message
+  #       env:
+  #         SEND_KEY: ${{ secrets.SEND_KEY }}
+  #       run: |
+  #         curl -X POST -d "title=GitHub Actions&desp=消息推送功能." https://sctapi.ftqq.com/$SEND_KEY.send
