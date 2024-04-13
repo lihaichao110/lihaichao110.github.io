@@ -1,81 +1,39 @@
-# 用于构建 VitePress 站点并将其部署到 GitHub Pages 的示例工作流程
-#
-name: Deploy VitePress site to Pages
+name: lihaichao-docs
 
 on:
-  # schedule:
-  #   - cron: '0 1 * * *'
-  # 推送的分支为 main 如果是 master 请填写 master
-  # 默认的分支是 master
   push:
-    branches: [main]
-
-  # 允许手动运行此流程
-  workflow_dispatch:
-
-# 设置 github_token 的权限允许部署到 GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# 仅允许一项并发部署，跳过正在进行的运行和最新排队的运行之间排队的运行。
-# 但是，请勿取消正在进行的运行，因为我们希望完成这些生产部署。
-concurrency:
-  group: pages
-  cancel-in-progress: false
+    branches:
+      - main  # 触发部署的分支
 
 jobs:
-  # Build job
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # 如果未启用lastUpdated则不需要
-      # - uses: pnpm/action-setup@v2 # 如果您使用 pnpm，请取消注释
-      # - uses: oven-sh/setup-bun@v1 # 如果您使用 Bun，请取消注释
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          cache: npm # or pnpm / yarn
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-      - name: Install dependencies
-        run: npm install # ci # or pnpm install / yarn install / bun install
-      - name: Build with VitePress
-        run: npm run docs:build # or pnpm docs:build / yarn docs:build / bun run docs:build
-          # touch docs/.vitepress/dist/.nojekyll
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs/.vitepress/dist
-
-  # Deployment job
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    needs: build
     runs-on: ubuntu-latest
-    name: Deploy
+
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-  
-  # Send-WeChat-Message job
-  # sendMsg:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - name: 开始构建
-  #       run: |
-  #         echo "开始构建"
-  #     - name: Send WeChat Message
-  #       env:
-  #         SEND_KEY: ${{ secrets.SEND_KEY }}
-  #       run: |
-  #         curl -X POST -d "title=GitHub Actions&desp=消息推送功能." https://sctapi.ftqq.com/$SEND_KEY.send
+    # 下载源码
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    # 打包构建
+    - name: Setup Node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 18.14.0
+    - run: npm -v
+    - run: npm install
+    - run: npm run docs:build
+
+    # 部署到服务器
+    - name: Deploy
+      uses: easingthemes/ssh-deploy@main
+      with:
+        EXCLUDE: node_modules
+        SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+        REMOTE_HOST: ${{ secrets.HOST }}
+        REMOTE_USER: ${{ secrets.USERNAME }}
+        TARGET: /usr/www/docs
+        SOURCE: docs/.vitepress/dist
+      
+      # 打印信息
+    - name: 成功执行
+      run: echo "success"
