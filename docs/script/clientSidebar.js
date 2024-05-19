@@ -20,6 +20,10 @@ export const networkSidebar = walk(networkDir,'网络')
 const nodejsDir = '../server/nodejs';
 export const nodejsSidebar = walk(nodejsDir,'NodeJs')
 
+// express
+const expressDir = '../server/express';
+export const expressSidebar = walk(expressDir,'NodeJs')
+
 // nestjs
 const nestjsDir = '../server/nestjs';
 export const nestjsSidebar = walk(nestjsDir,'NestJs');
@@ -27,3 +31,4 @@ export const nestjsSidebar = walk(nestjsDir,'NestJs');
 // mysql
 const mysqlDir = '../server/mysql';
 export const mysqlSidebar = walk(mysqlDir,'MySql')
+
