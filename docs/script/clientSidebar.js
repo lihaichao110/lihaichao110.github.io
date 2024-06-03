@@ -22,7 +22,7 @@ export const nodejsSidebar = walk(nodejsDir,'NodeJs')
 
 // express
 const expressDir = '../server/express';
-export const expressSidebar = walk(expressDir,'NodeJs')
+export const expressSidebar = walk(expressDir,'Express')
 
 // nestjs
 const nestjsDir = '../server/nestjs';
