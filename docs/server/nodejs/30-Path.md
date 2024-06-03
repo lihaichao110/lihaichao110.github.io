@@ -86,3 +86,4 @@ path.dirname('/foo/bar/baz/asdf/quux');
 如果 `path` 不是字符串，则抛出 `TypeError` 
 
 ## path.extname(path)
+`path.extname()` 方法返回 `path` 的扩展名，从上次出现的 . （句点） 字符到 的 最后部分的 `path` 字符串末尾。如果 `path` 的最后一部分没有 `.` ，或者除了 `path` 的 （请参阅 path.basename() ） 的基名的第一个字符之外没有其他 `.` 字符，则返回一个空字符串。
