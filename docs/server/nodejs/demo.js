@@ -1,4 +1,3 @@
-const os = require('node:os'); 
+const process = require('node:process');
 
-// console.dir(os.cpus())
-console.log(os.version())
+console.log(process.versions)
