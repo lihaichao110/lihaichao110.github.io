@@ -24,5 +24,28 @@ callbackFunction((err, ret) => {
 hello world2
 ```
 
+## util.types
+`util.types` 为不同类型的内置对象提供类型检查。与 `instanceof` 或不同 `Object.prototype.toString.call(value)`，这些检查不会检查对象中可从 JavaScript 访问的属性（如其原型），并且通常具有调用 C++ 的开销。
+
+结果通常不保证值在 JavaScript 中会显示哪些类型的属性或行为。它们主要对喜欢在 JavaScript 中进行类型检查的插件开发人员有用。
+
+`require('node:util').types` 可以通过或访问 API `require('node:util/types')`
+
+### util.types.isPromise(value)
+检查 `value` 是否为 Promise。
+```js
+const util = require('node:util');
+
+async function fn() {
+  return 'hello world';
+}
+
+const isPromise = util.types.isPromise(fn());
+
+console.log(isPromise);
+```
+更多判断类型的查看 [nodejs](https://nodejs.org/docs/latest/api/util.html)
+
+
 
 
