@@ -1,34 +1,23 @@
-import {walk} from "./utils";
+import { generateSideBarList } from "./utils";
 
-// 首页模块
-const homeDir = '../home/toolbox';
-export const homeSidebar = walk(homeDir,'零零碎碎');
-
-// javascript模块
-const jsDir = '../client/js';
-export const jsSidebar = walk(jsDir,'JavaScript');
-
-// gsap模块
-const gsapDir = '../client/gsap';
-export const gsapSidebar = walk(gsapDir,'GSAP');
-
-// offer-网络
-const networkDir = '../offer/network'
-export const networkSidebar = walk(networkDir,'网络')
-
-// nodejs
-const nodejsDir = '../server/nodejs';
-export const nodejsSidebar = walk(nodejsDir,'NodeJs')
-
-// express
-const expressDir = '../server/express';
-export const expressSidebar = walk(expressDir,'Express')
-
-// nestjs
-const nestjsDir = '../server/nestjs';
-export const nestjsSidebar = walk(nestjsDir,'NestJs');
-
-// mysql
-const mysqlDir = '../server/mysql';
-export const mysqlSidebar = walk(mysqlDir,'MySql')
-
+/** 侧边栏对应的目录 */
+export const SideBarMenu = {
+  // 首页模块
+  '/home/toolbox': generateSideBarList('../home/toolbox','零零碎碎'),
+  // javascript模块
+  '/client/js': generateSideBarList('../client/js','JavaScript'),
+  // gsap模块
+  '/client/gsap': generateSideBarList('../client/gsap','GSAP'),
+  // AntDesign 源码
+  '/client/ant-design': generateSideBarList('../client/ant-design','AntDesign 源码'),
+  // offer-网络
+  '/offer/network': generateSideBarList('../offer/network','网络'),
+  // nodejs
+  '/server/nodejs': generateSideBarList('../server/nodejs','NodeJs'),
+  // express
+  '/server/express': generateSideBarList('../server/express','Express'),
+  // nestjs
+  '/server/nestjs': generateSideBarList('../server/nestjs','NestJs'),
+  // mysql
+  '/server/mysql': generateSideBarList('../server/mysql','MySql'),
+}

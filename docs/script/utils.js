@@ -1,8 +1,12 @@
 import * as path from 'path';
 import * as fs from 'fs'
 
-// 动态生成侧边栏函数
-export const walk = function (dir, subDir = '') {
+/**
+ * 动态生成侧边栏函数
+ * @param {String} dir 目录路径
+ * @param {String} subDir 目录的标题名
+ */
+export const generateSideBarList = function (dir, subDir = '') {
   const url = path.join(__dirname, dir)
 	let childList = [];
 	const list = fs.readdirSync(url);
@@ -17,13 +21,6 @@ export const walk = function (dir, subDir = '') {
 				link
 			})
 		} 
-		// else {
-		// 	results.push({
-		// 		text: file,
-		// 		collapsed: false,
-		// 		items: walk(`${dir}/${file}`)
-		// 	})			
-		// }
 	})
 
 	const results = [

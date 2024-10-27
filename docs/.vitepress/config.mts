@@ -1,14 +1,5 @@
 import { defineConfig } from 'vitepress'
-import { 
-  homeSidebar,
-  jsSidebar, 
-  gsapSidebar,
-  networkSidebar, 
-  nodejsSidebar, 
-  nestjsSidebar,
-  mysqlSidebar,
-  expressSidebar
-} from '../script/clientSidebar'
+import { SideBarMenu } from '../script/clientSidebar'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -59,6 +50,7 @@ export default defineConfig({
             text: '框架',
             items: [
               { text: 'GSAP', link: '/client/gsap/gsap使用' },
+              { text: 'AntDesign 源码', link: '/client/ant-design/01-button' },
             ]
           }
         ]
@@ -79,16 +71,7 @@ export default defineConfig({
       { text: 'offer 指南 🌌', link: '/offer/network/1.http历史' },
     ],
 
-    sidebar: {
-      '/home/toolbox': homeSidebar,
-      '/client/js': jsSidebar,
-      '/client/gsap': gsapSidebar,
-      '/offer/network': networkSidebar,
-      '/server/nodejs': nodejsSidebar,
-      '/server/express': expressSidebar,
-      '/server/nestjs': nestjsSidebar,
-      '/server/mysql': mysqlSidebar,
-    },
+    sidebar: SideBarMenu,
     socialLinks: [
       { icon: 'github', link: 'https://github.com/lihaichao110' },
       { 
