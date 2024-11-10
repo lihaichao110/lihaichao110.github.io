@@ -50,7 +50,7 @@ export default defineConfig({
             text: '框架',
             items: [
               { text: 'GSAP', link: '/client/gsap/gsap使用' },
-              { text: 'AntDesign 源码', link: '/client/ant-design/01-button' },
+              { text: 'AntDesign 源码', link: '/client/ant-design/01-Button' },
             ]
           }
         ]
