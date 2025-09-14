@@ -5,8 +5,8 @@ import { SideBarMenu } from '../script/clientSidebar'
 export default defineConfig({
   title: "CodeVortex",
   description: "代码奇迹：引领未来的编程魔法 🚀✨",
-  head: [ 
-    [ 'link', { rel: 'icon', href: '/favicon.svg' } ],
+  head: [
+    ['link', { rel: 'icon', href: '/favicon.svg' }],
   ],
   // base: '/base/',
   // assetsDir: 'static',
@@ -17,7 +17,7 @@ export default defineConfig({
     lineNumbers: true
   },
   themeConfig: {
-  
+
     outline: {
       label: '目录'
     },
@@ -37,8 +37,8 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: '首页', link: '/' },
-      { 
-        text: '前端 Coding 🚀', 
+      {
+        text: '前端 Coding 🚀',
         items: [
           {
             text: '基本功',
@@ -55,15 +55,17 @@ export default defineConfig({
           }
         ]
       },
-      { text: '后端 Coding 💻', 
+      {
+        text: '后端 Coding 💻',
         items: [
           {
             text: '服务',
             items: [
               { text: 'NodeJs', link: '/server/nodejs/01-快速上手' },
-              { text: 'Express', link: '/server/express/01-快速上手.md'},
+              { text: 'Express', link: '/server/express/01-快速上手.md' },
               { text: 'NestJs', link: '/server/nestjs/01-NestJS使用指南' },
-              { text: 'MySql', link: '/server/mysql/01-基础用法' }
+              { text: 'MySql', link: '/server/mysql/01-基础用法' },
+              { text: 'Go', link: '/server/go/01-快速开始' }
             ]
           },
         ]
@@ -74,11 +76,11 @@ export default defineConfig({
     sidebar: SideBarMenu,
     socialLinks: [
       { icon: 'github', link: 'https://github.com/lihaichao110' },
-      { 
+      {
         icon: {
           svg: '<svg t="1701064687995" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4020" width="200" height="200"><path d="M512 1024C229.222 1024 0 794.778 0 512S229.222 0 512 0s512 229.222 512 512-229.222 512-512 512z m259.149-568.883h-290.74a25.293 25.293 0 0 0-25.292 25.293l-0.026 63.206c0 13.952 11.315 25.293 25.267 25.293h177.024c13.978 0 25.293 11.315 25.293 25.267v12.646a75.853 75.853 0 0 1-75.853 75.853h-240.23a25.293 25.293 0 0 1-25.267-25.293V417.203a75.853 75.853 0 0 1 75.827-75.853h353.946a25.293 25.293 0 0 0 25.267-25.292l0.077-63.207a25.293 25.293 0 0 0-25.268-25.293H417.152a189.62 189.62 0 0 0-189.62 189.645V771.15c0 13.977 11.316 25.293 25.294 25.293h372.94a170.65 170.65 0 0 0 170.65-170.65V480.384a25.293 25.293 0 0 0-25.293-25.267z" fill="#C71D23" p-id="4021"></path></svg>'
-        }, 
-        link: 'https://gitee.com/li-hai-chao/' 
+        },
+        link: 'https://gitee.com/li-hai-chao/'
       },
       {
         icon: {
@@ -94,6 +96,6 @@ export default defineConfig({
     search: {
       provider: 'local'
     },
-    
+
   }
 })
