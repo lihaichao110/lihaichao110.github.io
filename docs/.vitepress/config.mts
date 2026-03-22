@@ -1,8 +1,8 @@
-import { defineConfig } from 'vitepress'
 import { SideBarMenu } from '../script/clientSidebar'
+import { withMermaid } from 'vitepress-plugin-mermaid'
 
 // https://vitepress.dev/reference/site-config
-export default defineConfig({
+export default withMermaid({
   title: "CodeVortex",
   description: "代码奇迹：引领未来的编程魔法 🚀✨",
   head: [
@@ -16,6 +16,7 @@ export default defineConfig({
   markdown: {
     lineNumbers: true
   },
+  mermaid: {},
   themeConfig: {
 
     outline: {
@@ -65,7 +66,8 @@ export default defineConfig({
               { text: 'Express', link: '/server/express/01-快速上手.md' },
               { text: 'NestJs', link: '/server/nestjs/01-NestJS使用指南' },
               { text: 'MySql', link: '/server/mysql/01-基础用法' },
-              { text: 'Go', link: '/server/go/01-快速开始' }
+              { text: 'Go', link: '/server/go/01-快速开始' },
+              { text: 'Docker', link: '/server/docker/01-快速开始' }
             ]
           },
         ]

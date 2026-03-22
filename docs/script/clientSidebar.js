@@ -25,4 +25,6 @@ export const SideBarMenu = {
   "/server/mysql": generateSideBarList("../server/mysql", "MySql"),
   // go
   "/server/go": generateSideBarList("../server/go", "Go"),
+  // docker
+  "/server/docker": generateSideBarList("../server/docker", "Docker"),
 };
