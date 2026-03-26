@@ -2,618 +2,270 @@
 
 ## 什么是 Docker Compose
 
-Docker Compose 是一个用来**定义和运行多容器应用**的工具。
+Docker Compose 是一个用于定义和管理多容器应用的工具。通过一个 `docker-compose.yml` 配置文件，你可以同时启动、停止和管理多个 Docker 容器。
 
-### 生活中的类比
+**解决的问题：**
+- 手动启动多个容器命令繁琐
+- 容器之间的依赖关系难以管理
+- 环境配置分散在多个命令中
 
-想象你要开一家餐厅，需要同时准备：
+**核心概念：**
+- **services（服务）**：代表一个容器
+- **volumes（卷）**：持久化数据
+- **networks（网络）**：容器间通信
 
-- 厨房（Web 服务）
-- 食材库（MySQL 数据库）
-- 冰箱（Redis 缓存）
-- 收银系统（其他服务）
-
-传统方式需要一个个手动启动每个服务，既麻烦又容易出错。
-
-**Docker Compose 就是这个餐厅的「一键开业」按钮**：你只需要写一份清单（YAML 文件），告诉 Docker Compose 需要哪些服务，然后一个命令就能把所有服务一起启动起来。
-
-### 为什么需要 Docker Compose
-
-**问题**：一个应用通常不只有一个容器
-
-比如一个典型的 Web 应用：
-
-```
-用户请求 → Nginx（Web 服务器）
-         → Spring Boot（Java 后端）
-         → MySQL（数据库）
-         → Redis（缓存）
-```
-
-**解决方案**：手动管理多个容器很麻烦
-
-```bash
-# 以前要这样启动每个容器
-docker run -d --name mysql -e MYSQL_ROOT_PASSWORD=123 mysql:8.0
-docker run -d --name redis redis:alpine
-docker run -d --name backend -p 8080:8080 my-app
-docker run -d --name nginx -p 80:80 nginx
-```
-
-而且还要考虑容器之间的依赖关系、启动顺序、网络配置等。
-
-**Docker Compose 的优势**：
-
-- 一个命令启动所有服务
-- 自动管理服务依赖和启动顺序
-- 统一管理所有容器配置
-- 轻松实现服务扩缩容
-
-## 安装 Docker Compose
-
-Docker Compose 通常随 Docker Desktop 一起安装。
-
-### 检查是否已安装
-
-```bash
-docker-compose --version
-# 或者
-docker compose version
-```
-
-> 注意：新版本 Docker 已经将 `docker-compose` 集成到 `docker` 命令中（`docker compose`），两者功能相同。
-
-### 单独安装（Linux）
-
-```bash
-# 下载二进制文件
-sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-
-# 添加执行权限
-sudo chmod +x /usr/local/bin/docker-compose
-
-# 创建软链接（可选）
-sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-```
-
-## 快速开始
-
-### 1. 创建项目目录
-
-```bash
-mkdir myapp && cd myapp
-```
-
-### 2. 创建应用文件
-
-假设是一个简单的 Nginx + PHP 应用：
-
-```bash
-# index.php
-echo '<?php echo "Hello from PHP!"; ?>' > index.php
-
-# Dockerfile
-cat > Dockerfile << 'EOF'
-FROM php:8.0-apache
-COPY . /var/www/html/
-EOF
-```
-
-### 3. 创建 docker-compose.yml
-
-这是核心文件，定义了所有服务：
-
-```yaml
-version: '3.8'  # Docker Compose 文件版本
-
-services:  # 服务列表
-  web:
-    build: .  # 使用当前目录的 Dockerfile 构建
-    ports:    # 端口映射
-      - "80:80"
-    volumes:  # 数据卷挂载
-      - .:/var/www/html
-
-  db:
-    image: mysql:8.0  # 直接使用镜像
-    environment:      # 环境变量
-      MYSQL_ROOT_PASSWORD: 123456
-      MYSQL_DATABASE: myapp
-    volumes:
-      - db_data:/var/lib/mysql  # 命名数据卷
-
-  redis:
-    image: redis:alpine
-
-volumes:  # 定义命名数据卷
-  db_data:
-```
-
-### 4. 启动服务
-
-```bash
-# 启动所有服务（-d 表示后台运行）
-docker compose up -d
-
-# 或者旧版本
-docker-compose up -d
-```
-
-### 5. 管理服务
-
-```bash
-# 查看运行状态
-docker compose ps
-
-# 查看所有服务日志
-docker compose logs
-
-# 查看指定服务日志
-docker compose logs web
-
-# 停止所有服务
-docker compose down
-
-# 停止并删除数据卷
-docker compose down -v
-```
-
-### 6. 扩展服务
-
-```bash
-# 扩展 web 服务到 3 个容器
-docker compose up -d --scale web=3
-```
-
-## docker-compose.yml 详解
-
-### 基本结构
-
-```yaml
-version: '3.8'
-
-services:
-  服务名称:
-    image: 镜像名
-    build: 构建配置
-    ports: 端口映射
-    environment: 环境变量
-    volumes: 数据卷
-    networks: 网络
-    depends_on: 依赖服务
-```
-
-### 常用配置项
-
-#### image - 使用已有镜像
-
-```yaml
-services:
-  db:
-    image: mysql:8.0
-```
-
-#### build - 从 Dockerfile 构建
-
+**简单示例：**
 ```yaml
 services:
   web:
-    build:
-      context: ./app      # Dockerfile 所在目录
-      dockerfile: Dockerfile  # Dockerfile 文件名
-```
-
-#### ports - 端口映射
-
-```yaml
-services:
-  web:
-    ports:
-      - "80:80"      # 宿主机端口:容器端口
-      - "443:443"
-      - "8080-8085:80"  # 端口范围映射
-```
-
-#### environment - 环境变量
-
-```yaml
-services:
-  db:
-    environment:
-      - MYSQL_ROOT_PASSWORD=123456
-      - MYSQL_DATABASE=myapp
-    # 或者使用字典格式
-    environment:
-      MYSQL_ROOT_PASSWORD: 123456
-      MYSQL_DATABASE: myapp
-```
-
-#### volumes - 数据卷
-
-```yaml
-services:
-  web:
-    volumes:
-      - ./html:/var/www/html      # 宿主机路径:容器路径
-      - config:/etc/config        # 命名数据卷
-
-volumes:
-  config:
-```
-
-#### depends_on - 依赖关系
-
-```yaml
-services:
-  web:
-    depends_on:
-      - db
-      - redis
-
-  db:
-    image: mysql:8.0
-
-  redis:
-    image: redis:alpine
-```
-
-> 注意：`depends_on` 只保证启动顺序，不保证服务已就绪。
-
-#### networks - 网络配置
-
-```yaml
-services:
-  web:
-    networks:
-      - frontend
-      - backend
-
-networks:
-  frontend:
-  backend:
-```
-
-#### restart - 重启策略
-
-```yaml
-services:
-  web:
-    restart: always  # 总是重启
-```
-
-可选值：
-
-- `no` - 不重启
-- `always` - 总是重启
-- `on-failure` - 仅在失败时重启
-- `unless-stopped` - 除非手动停止，否则一直重启
-
-## 常用命令
-
-### 服务管理
-
-```bash
-# 启动服务
-docker compose up
-
-# 后台运行
-docker compose up -d
-
-# 重新构建镜像
-docker compose up --build
-
-# 停止服务
-docker compose down
-
-# 重启服务
-docker compose restart
-
-# 暂停服务
-docker compose pause
-
-# 恢复服务
-docker compose unpause
-```
-
-### 查看状态
-
-```bash
-# 查看运行状态
-docker compose ps
-
-# 查看服务日志
-docker compose logs -f
-
-# 查看服务详细信息
-docker compose top
-
-# 查看资源使用
-docker stats
-```
-
-### 扩展和缩容
-
-```bash
-# 扩展服务数量
-docker compose up -d --scale web=3
-
-# 查看扩展状态
-docker compose ps
-```
-
-### 清理
-
-```bash
-# 停止并删除容器、网络
-docker compose down
-
-# 停止并删除容器、网络、数据卷
-docker compose down -v
-
-# 删除已停止的服务
-docker compose rm
-
-# 删除所有镜像（谨慎使用）
-docker compose down --rmi all
-```
-
-### 执行命令
-
-```bash
-# 在服务中执行命令
-docker compose exec web ls -la
-
-# 进入服务 shell
-docker compose exec web sh
-
-# 启动一次性任务
-docker compose run --rm web npm install
-```
-
-## 实战：部署一个 Web 应用
-
-### 项目结构
-
-```
-myproject/
-├── docker-compose.yml
-├── Dockerfile
-├── src/
-│   └── index.php
-└── .env
-```
-
-### 1. 创建 docker-compose.yml
-
-```yaml
-version: '3.8'
-
-services:
-  web:
-    build: .
+    image: nginx
     ports:
       - "80:80"
-    volumes:
-      - ./src:/var/www/html
-    depends_on:
-      - db
-      - redis
-
   db:
-    image: mysql:8.0
+    image: mysql:8
     environment:
-      MYSQL_ROOT_PASSWORD: root123
-      MYSQL_DATABASE: myapp
-    volumes:
-      - db_data:/var/lib/mysql
-    networks:
-      - backend
-
-  redis:
-    image: redis:alpine
-    networks:
-      - backend
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    ports:
-      - "8080:80"
-    environment:
-      PMA_HOST: db
-    depends_on:
-      - db
-    networks:
-      - backend
-
-volumes:
-  db_data:
-
-networks:
-  backend:
+      MYSQL_ROOT_PASSWORD: 123456
 ```
 
-### 2. 创建 Dockerfile
+一行命令即可启动全部服务：`docker-compose up`
+
+## 后端服务部署架构
+
+**整体流程：**
+
+```mermaid
+flowchart LR
+    A[代码提交] --> B[GitHub Actions]
+    B --> C[构建 Docker 镜像]
+    C --> D[推送到阿里云镜像仓库]
+    D --> E[ACK 集群拉取镜像]
+    E --> F[Docker Compose 运行容器]
+```
+
+**核心组件：**
+- **GitHub Actions**：自动化构建和推送镜像
+- **阿里云容器镜像服务（ACR）**：存储 Docker 镜像
+- **Docker Compose**：在 ACK 节点上编排容器
+
+**部署流程简述：**
+1. 代码推送后，GitHub Actions 自动构建 Docker 镜像
+2. 镜像推送到阿里云容器镜像仓库
+4. 使用 Docker Compose 拉取服务镜像
+
+## GitHub Actions 配置详解
+
+```yaml
+name: Docker 打包构建发布
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. 拉取 GitHub 上的代码
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. 登录阿里云容器镜像服务（ACR）
+      - name: Login to Alibaba Cloud ACR
+        uses: aliyun/acr-login@v1
+        with:
+          login-server: ${{ secrets.ALIYUN_REGISTRY_SERVER }}
+          username: ${{ secrets.ALIYUN_REGISTRY_USERNAME }}
+          password: ${{ secrets.ALIYUN_REGISTRY_PASSWORD }}
+
+      # 3. 设置日期和 SHA
+      - name: Set tags
+        id: tags
+        run: echo "sha=${GITHUB_SHA:0:10}" >> $GITHUB_OUTPUT && echo "date=$(date +%Y%m%d)" >> $GITHUB_OUTPUT
+
+      # 4. 构建并推送 Docker 镜像到阿里云 ACR
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.ALIYUN_REGISTRY_SERVER }}/${{ secrets.ALIYUN_NAMESPACE }}/agentflow:latest
+
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # 登录阿里云镜像仓库
+            docker login --username=${{ secrets.ALIYUN_REGISTRY_USERNAME }} --password=${{ secrets.ALIYUN_REGISTRY_PASSWORD }} ${{ secrets.ALIYUN_REGISTRY_SERVER }}
+            cd /docker
+            docker compose pull
+            docker compose up -d --force-recreate
+```
+
+需要在 GitHub 仓库 `Settings > Secrets` 中配置：
+- `ALIYUN_REGISTRY_SERVER`：阿里云镜像仓库地址
+- `ALIYUN_REGISTRY_USERNAME`：阿里云账号
+- `ALIYUN_REGISTRY_PASSWORD`：阿里云密码
+- `ALIYUN_NAMESPACE`：命名空间
+- `SERVER_IP`：服务器 IP
+- `SSH_PRIVATE_KEY`：SSH 私钥
+
+## Dockerfile 配置详解
 
 ```dockerfile
-FROM php:8.0-apache
+# 使用 node:22-alpine 作为基础镜像 并命名为 builder
+FROM node:22-alpine as builder
 
-RUN docker-php-ext-install pdo pdo_mysql
+# 设置工作目录
+WORKDIR /app
+
+# 复制项目依赖文件到容器的 工作 目录
+COPY package.json pnpm-*.yaml ./
+
+# 安装 pnpm
+RUN npm install -g pnpm
+
+# 安装项目依赖
+RUN pnpm install
+
+# 复制项目所有代码到容器的 工作 目录
+COPY . .
+
+# 编译 NestJS 项目
+RUN pnpm build
+
+# 第二阶段
+FROM node:22-alpine as runner
+
+# 设置工作目录
+WORKDIR /app
+
+# 复制编译阶段生成的依赖文件（只复制生产依赖，减少体积）
+COPY --from=builder /app/package*.json /app/pnpm-*.yaml ./
+
+# 安装 pnpm
+RUN npm install -g pnpm
+
+# 安装项目依赖
+RUN pnpm install --only=production
+
+# 复制编译阶段生成的 dist 目录
+COPY --from=builder /app/dist ./dist
+
+# 暴露端口
+EXPOSE 3000
+
+# 安装 PM2
+RUN npm install -g pm2
+
+# 复制 PM2 配置文件
+COPY pm2.config.js ./
+
+# 用 pm2-runtime 启动（适配容器环境，避免容器退出）
+CMD ["pm2-runtime", "start", "pm2.config.js"]
 ```
 
-### 3. 创建 .env 文件
+**核心要点：**
+- **多阶段构建**：第一阶段编译，第二阶段只复制运行时文件，最终镜像体积更小
+- **pnpm install --only=production**：只安装生产依赖，不安装开发依赖
+- **PM2**：用 `pm2-runtime` 启动，适配容器环境，避免容器退出
 
-```bash
-MYSQL_ROOT_PASSWORD=root123
-MYSQL_DATABASE=myapp
-```
+## 阿里云添加容器镜像服务
 
-### 4. 启动应用
+### 第一步：进入容器镜像服务控制台
 
-```bash
-# 启动所有服务
-docker compose up -d
+![容器镜像服务控制台](/static/docker/exampleList.jpg)
 
-# 查看状态
-docker compose ps
+进入阿里云容器镜像服务控制台，这里可以管理镜像仓库、命名空间等资源。
 
-# 查看日志
-docker compose logs -f
-```
+### 第二步：创建命名空间
 
-### 5. 访问应用
+![创建命名空间](/static/docker/nameSpace.png)
 
-- Web 应用：http://localhost
-- PHPMyAdmin：http://localhost:8080
+点击「创建命名空间」，填写名称（如 `lhc123456`）。命名空间用于分组管理多个镜像仓库。
 
-### 6. 关闭应用
+### 第三步：创建镜像仓库
 
-```bash
-docker compose down
-```
+![创建镜像仓库](/static/docker/mirrorRepository.png)
 
-## 多环境配置
+点击「创建镜像仓库」，选择刚才创建的命名空间，填写仓库名称（如 `agentflow`）。仓库创建完成后会显示仓库地址，供 GitHub Actions 推送镜像使用。
 
-Docker Compose 支持通过多个文件实现多环境配置。
+## 服务器端 docker-compose.yml 配置
 
-### 基础知识和文件
-
-Docker Compose 会读取 `docker-compose.yml` 和 `docker-compose.override.yml` 文件。
-
-### 开发环境
+在服务器根目录创建 `/docker/docker-compose.yml` 文件：
 
 ```yaml
-# docker-compose.yml（基础配置）
+version: '3.8'
+
 services:
-  web:
-    build: .
-    ports:
-      - "80:80"
-
-  db:
-    image: mysql:8.0
-```
-
-### 开发覆盖配置
-
-```yaml
-# docker-compose.override.yml（开发环境）
-services:
-  web:
-    volumes:
-      - ./src:/var/www/html  # 开发时挂载代码
-    environment:
-      - DEBUG=true
-
-  db:
-    ports:
-      - "3306:3306"  # 开发时开放端口
-```
-
-### 生产环境覆盖配置
-
-```yaml
-# docker-compose.prod.yml（生产环境）
-services:
-  web:
-    volumes:
-      - static_files:/var/www/html  # 生产用数据卷
-    environment:
-      - DEBUG=false
-
-  db:
-    volumes:
-      - prod_data:/var/lib/mysql
+  # 后端服务
+  backend:
+    image: crpi-9b1idnnx82y0du6c.cn-shanghai.personal.cr.aliyuncs.com/agentflow_be/agentflow:latest
     restart: always
-
-volumes:
-  static_files:
-  prod_data:
-```
-
-### 使用不同环境
-
-```bash
-# 开发环境（默认加载 override）
-docker compose up -d
-
-# 生产环境
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
-```
-
-## 常见问题
-
-### 1. 容器启动顺序问题
-
-`depends_on` 只保证启动顺序，不保证服务就绪。
-
-**解决方案**：使用 `healthcheck` 配合 `condition`
-
-```yaml
-services:
-  db:
-    image: mysql:8.0
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 5s
-      timeout: 3s
-      retries: 3
-
-  web:
-    depends_on:
-      db:
-        condition: service_healthy
-```
-
-### 2. 数据卷权限问题
-
-挂载目录后容器内没有写入权限。
-
-**解决方案**：
-
-```yaml
-services:
-  web:
-    user: "1000:1000"  # 指定用户
-    # 或者在 Dockerfile 中设置正确权限
-```
-
-### 3. 中文乱码问题
-
-**解决方案**：配置字符集环境变量
-
-```yaml
-services:
-  db:
-    image: mysql:8.0
+    ports:
+      - "3000:3000"
+    networks:
+      - AgentFlow
     environment:
-      LANG: C.UTF-8
-    volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - TZ=Asia/Shanghai
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  AgentFlow:
 ```
 
-### 4. 端口冲突
+**核心配置说明：**
+- **image**：阿里云镜像仓库地址和标签
+- **restart: always**：容器异常退出后自动重启
+- **networks**：使用共享网络让前后端互通
+- **logging**：日志轮转，单文件最大 10M，保留 3 个文件
 
-多个服务使用相同端口。
+## Nginx HTTPS 反向代理配置
 
-**解决方案**：修改端口映射
+在 Nginx 配置目录中添加反向代理配置：
 
-```yaml
-services:
-  web1:
-    ports:
-      - "80:80"
+```nginx
+server {
+  if ($host = intra.lihaichao.cn) {
+      return 301 https://$host$request_uri;
+  } # managed by Certbot
 
-  web2:
-    ports:
-      - "8080:80"  # 改为不同端口
+  listen 80;
+  server_name intra.lihaichao.cn;
+  # HTTP 自动跳 HTTPS
+  return 301 https://$host$request_uri;
+}
+
+
+# HTTPS 反向代理到后端 3000
+server {
+    listen 443 ssl;
+    server_name intra.lihaichao.cn;
+
+    ssl_certificate /etc/letsencrypt/live/intra.lihaichao.cn/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/intra.lihaichao.cn/privkey.pem;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
 ```
 
-## 最佳实践
+**配置说明：**
+- **listen 443 ssl**：监听 443 端口并启用 SSL
+- **server_name**：访问的域名
+- **ssl_certificate**：SSL 证书路径
+- **proxy_pass http://127.0.0.1:3000**：将请求转发到后端服务
+- **proxy_set_header**：传递真实客户端 IP 和协议信息
 
-1. **使用版本控制**：将 `docker-compose.yml` 纳入版本控制
-2. **使用 .env 文件**：敏感配置通过环境变量管理
-3. **合理组织服务**：按功能模块划分服务
-4. **设置健康检查**：确保依赖服务就绪后再启动
-5. **使用命名数据卷**：方便数据持久化和迁移
-6. **定期清理资源**：`docker compose down -v` 清理无用数据卷
-7. **生产环境配置**：使用多文件覆盖不同环境配置
